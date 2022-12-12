@@ -1,226 +1,76 @@
-# Functional Programming 都可以當你阿公了 Part 1
+# Functional Programming 都可以當你阿公了 Part 2
 
-在進入到正題之前，
-我們要先來學習幾個概念。
+## Realworld Example
 
-> 以下範例雖然用數學作為例子，
-> 但並不表示你必須要很了解數學才能看懂，
-> 這裡意在表示**無關使用何種程式語言**。
+[sentence-splitter](https://github.com/tainvecs/sentence-splitter)
 
-## 封裝
+## 閱讀
 
-我們可以舉一個國中數學公式作為例子，
+[輕量級函式編程](https://github.com/getify/Functional-Light-JS)
+[函式指北針](https://github.com/MostlyAdequate/mostly-adequate-guide)
+[組合軟體](https://medium.com/javascript-scene/composing-software-the-book-f31c77fc3ddc)
 
-```math
-c = \sqrt{a^{2}+b^{2}}
+### 一點歷史
+
+在電腦科學的早期，連電腦都還沒問世的年代，
+有兩位偉大的數學家奠定了當今電腦科學的兩大基礎，
+
+- [阿隆佐·邱奇 Alonzo Church](https://en.wikipedia.org/wiki/Alonzo_Church)
+  [λ 演算 lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus)
+- [艾倫·圖靈 Alan Turing](https://en.wikipedia.org/wiki/Alan_Turing)
+  [圖靈機](https://en.wikipedia.org/wiki/Lambda_calculus)
+
+> λ 演算 => Lisp => Clojure / Racket => ...
+
+[Scheme](<https://en.wikipedia.org/wiki/Scheme_(programming_language)>) => [Javascript](https://en.wikipedia.org/wiki/JavaScript)
+
+## First Class Function
+
+[一級函式](https://hello-kirby.hashnode.dev/mostly-adequate-guide-to-fp-chapter-02)
+
+函式是一等公民，
+就是指 函式跟其他物件一樣 沒有什麼特別。
+他可以儲存在陣列裏，當成參數傳遞，賦值給變數，你想怎麼樣都行。
+
+> 純物件導向的語言，函式必須附庸在 `class` 底下。
+
+```java
+class Obj {
+  method() {
+
+  }
+}
 ```
-
-如果對以上的公式不太熟悉的人也沒關係喔，
-你只要知道，這個公式可以用來計算 **三角形的斜邊長** 。
-
-如何使用這個公式呢？
-我們只需要把 a 跟 b 替換成 實際的數值，
-而他的運算結果就會是 三角形的斜邊長。
-
-對於一般民眾來說，
-我們其實不需要知道這段公式為什麼可以計算出斜邊長吧。
-
-發現且證明這段公式可行，那個是數學家的工作，
-而我們需要做的僅只是 用它來完成我們的工作。
-
-而像這種不需要了解其細節，
-我只要給它需要的參數，他就會給我相對應的結果，
-這個在軟體工程裡就被稱之為 **封裝**。
-
-## 抽象
-
-我們先來看看，最簡單使用這個公式的情況：
-
-```math
-\sqrt{ 3^{2} + 4^{2} } = 5
-```
-
-如果只有簡單一行的話，
-我們確實可以很快的理解這段公式的 **目的** 是什麼吧。
-
-那來嘗試看看下面的公式：
-
-```math
-\sqrt{ (x1 - p1)^{2} + (y1 - p2)^{2} } +
-\sqrt{ (x2 - p1)^{2} + (y2 - p2)^{2} } =
-\sqrt{ (x2 - x1)^{2} + (y2 - y1)^{2} }
-```
-
-請問上面公式的用途是什麼？
-
-如果你沒辦法在幾秒之內看出他的用途，
-沒關係，我也做不到。
-
-我相信一般的大眾，
-是做不到一眼就看出，這是用來檢測某個點是否在某條直線上的公式。
-
-而且如果可以，我其實也不太想每天看到這種東西，太痛苦了吧。
-
-如果這裡，可以用一般人能理解的語言給他一個名字，
-那我是否可以更容易理解這個公式的用途，
-而不需要去猜測。
-
-讓我們來試試看另一種方式：
-
-```math
-CheckPointOnLine:
-    \sqrt{ (x1 - p1)^{2} + (y1 - p2)^{2} } +
-    \sqrt{ (x2 - p1)^{2} + (y2 - p2)^{2} } =
-    \sqrt{ (x2 - x1)^{2} + (y2 - y1)^{2} }
-```
-
-並且我們可以透過名字下去描述
-我們在做運算的時候，
-就不需要每次都看到一坨運算式。
-
-```math
-CheckPointOnLine(x1, y1, x2, y2, p1, p2)
-```
-
-透過使用名字來代替其實際的細節，
-能達到同樣的效果且能夠輕易的被任何人理解意圖，
-也能透過名字與他人進行溝通。
-
-這個行為稱之為**抽象化**，
-這是身為人類必然會出現的能力。
-
-## 純粹
-
-你知道在紐約中午十二點的時候是 `1 + 1 = 3` 而不是 `2` 嗎？
-當然以上唬爛你的。
-
-不過假設這件事情是真的，那會是多麽可怕的情況，
-每個在紐約生活的人，戶頭會瞬間多出 1.5 倍，
-年齡從 20 歲瞬間老了 10 歲，
-所有的系統都要重寫。
-
-所以
-
-```math
-1 + 1 = 2
-```
-
-這個運算的結果，**必須**，
-1. 不受外界變化而改變。
-2. 不應改變外界情況。
-
-
-基於同樣的概念，
-如果一段程式只會根據它被給予的參數而改變其結果的話，
-那我們其實就可以簡單的從使用的參數跟函式去推斷結果，
-也不會因為調用這個程式而有任何的 **副作用**。
-
-我們可以建構出更加穩定且安全的程式，
-而不用擔心他會因為 *時間*, *地點*, *溫度* ... 之類外在的系統而變化，
-也不用擔心使用他會影響到外界。
-
-你給程式一個原始資料，他就會給你一個相對應的結果，
-而如果你之後再給他相同的資料，
-那他應該還是要給你相同的結果。
-
-這個結果不會因為外界的改變，而有所變化，
-也不會因為你調用的次數不同，而有所變化。
-
-我們來看幾個例子：
-
-> 以下用 JS 作為範例
 
 ```javascript
-const array = [1, 2, 3]
-
-function addElementIntoArray(element) {
-    array.push(element)
-}
-
-addElementIntoArray(4)
-
-console.log(array) // === [1, 2, 3, 4]
+const hi = (name) => `Hi ${name}`;
+const greeting = (name) => hi(name);
 ```
-
-以上的程式，在語法上是正確的，
-但個人覺得並不是一段好的程式。
-
-來看以下情況
 
 ```javascript
-const array = [1, 2, 3]
-
-function addElementIntoArray(element) {
-    array.push(element)
-}
-
-function doSomethingElse() {
-    if (Date.now() % 2 === 0) {
-        array.pop()
-    }
-}
-
-addElementIntoArray(4)
-doSomethingElse();
-
-console.log(array)
+const greeting = hi;
+greeting("Hello"); // Hi Hello
 ```
 
-現在請問你能判斷 `array` 會印出什麼嗎？
-顯然不行吧。
-我們無法斷定 `doSomethingElse` 會不會異動到 `array`。
+`hi` 已經是個函式且可以接受一個參數，
+為什麼需要另外定一個函式然後只是單純把同樣的參數丟去呼叫 `hi`？
 
-但如果我們改用以下做法：
+## Higher Order Function
 
-```javascript
-const array = [1, 2, 3]
+高階函式是指一種函式的種類，他可以：
 
-function addElementIntoArray(arr, element) {
-    return [...arr, element]
-}
-function doSomethingElse() {
-    if (Date.now() % 2 === 0) {
-        array.pop()
-    }
-}
+- 接收一個或多個函式做為傳入值
+- 回傳函式做為其結果
 
+> 在數學領域稱作 _算子 (Operator)_
+> 簡單來說就是把某個函式映射到另一函式，例如 _微分 (Differential Operator)_。
 
-const new_array = addElementIntoArray(arr, 4)
-doSomethingElse();
+## Currying
 
-console.log(new_array) // [1, 2, 3, 4]
-```
+[柯里](https://hello-kirby.hashnode.dev/chapter-04-currying)
 
-無論 `doSomethingElse` 執行了幾次，
-都不會影響到 `addElementIntoArray` 的結果。
+它的概念非常簡單：你可以只傳一部份的參數來執行一個函式，
+它會回傳一個新的函式來處理剩下的參數。
+直到你把剩下的參數都填完，他才會執行函式。
 
-所以對我來說 `addElementIntoArray` 就是一段好的程式，
-因為它很穩定，我們可以輕易的從他的參數，推斷出他的結果。
-
-## 所以 Functional Programming
-
-對我來說，FP 就是這樣的一種思考風格。
-
-1. 抽象化：用容易理解的表達方式取代實作細節。
-2. 可推導：程式必須純粹，相同輸入就會得到相應的結果。
-3. 穩定：程式不受外界的變化而影響到結果。
-
-
-從這樣的基本思路，逐漸發展成與 OOP 不同的解決問題方式。
-
-## Practice
-
-來點練習
-
-1. isEven: `yarn test isEven`
-2. isOdd: `yarn test isOdd`
-3. greaterThanFour: `yarn test greaterThanFour`
-4. isPrime: `yarn test isPrime`
-5. filter: `yarn test filter`
-6. double: `yarn test double`
-7. half: `yarn test half`
-8. map: `yarn test map`
-9. sum: `yarn test sum`
-10. max: `yarn test max`
-
-
+> Partial Application
