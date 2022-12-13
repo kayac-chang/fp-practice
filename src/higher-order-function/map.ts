@@ -1,3 +1,6 @@
+interface Pred<T> {
+  (x: T): boolean;
+}
 function filter<T>(pred: Pred<T>, list: T[]): T[] {
   let results: T[] = [];
   for (const item of list) {
@@ -22,15 +25,8 @@ interface Item {
   price: number;
 }
 function applyCoupon(discount: number, cart: Item[]) {
-  return (
-    cart
-
-      // 先留下是 tech 的商品
-      .filter((item) => item.category === "tech")
-
-      // 選這個商品的 price 打八折
-      .map((item) => ({ ...item, price: item.price - item.price * discount }))
-  );
+  // 先留下是 tech 的商品
+  // 選這個商品的 price 打八折
 }
 
 test("applyCoupon", () => {

@@ -7,23 +7,18 @@ function isEven(x: number): boolean {
 // filter 的 第一個參數 是 1. 函式 2. 陣列
 // filter 的 第二個參數 是 1. 函式 2. 陣列
 
-// test("isEven", () => {
-//   const testcase = [12, 324, 213, 4, 2, 3, 45, 4234];
-//   const expected = [12, 324, 4, 2, 4234];
-//   expect(filter(isEven, testcase)).toStrictEqual(expected);
-// });
+test("isEven", () => {
+  const testcase = [12, 324, 213, 4, 2, 3, 45, 4234];
+  const expected = [12, 324, 4, 2, 4234];
+  expect(filter(isEven, testcase)).toStrictEqual(expected);
+});
 
 interface Pred<T> {
   (x: T): boolean;
 }
 
 // Recursion
-function filter<T>(pred: Pred<T>, list: T[]): T[] {
-  const [item, ...rest] = list;
-  if (!item) return list;
-  if (pred(item)) return [item, ...filter(pred, rest)];
-  return filter(pred, rest);
-}
+function filter<T>(pred: Pred<T>, list: T[]): T[] {}
 
 // Iteration
 
@@ -34,9 +29,7 @@ interface Item {
   price: number;
 }
 
-function isPrime(item: Item) {
-  return item.type === "prime";
-}
+function isPrime(item: Item) {}
 
 test("isPrime", () => {
   const cart = [
