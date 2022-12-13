@@ -1,3 +1,7 @@
+interface Pred<T> {
+  (x: T): boolean;
+}
+
 function filter<T>(pred: Pred<T>, list: T[]): T[] {
   let results: T[] = [];
   for (const item of list) {

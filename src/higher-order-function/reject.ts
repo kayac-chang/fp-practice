@@ -22,7 +22,7 @@ interface Pred<T> {
 // 我們希望這類型常見的案例能夠用更直覺的方式處理
 
 // Iteration version
-function reject(pred, list) {
+function reject<T>(pred: Pred<T>, list: T[]) {
   const result = [];
   for (const item of list) {
     if (!pred(item)) result.push(item);

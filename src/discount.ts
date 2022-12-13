@@ -34,8 +34,9 @@ function isNotNull<A>(x: A): x is NonNullable<A> {
 
 const applyTo = <A, B>(x: A) => (fn: Unary<A, B>) => fn(x);
 
-function flatten(list: unknown[]) {
-  let result: unknown[] = [];
+type ListOf<T> = T | ListOf<T>[];
+function flatten<T>(list: ListOf<T>[]) {
+  let result: T[] = [];
   for (const item of list) {
     if (Array.isArray(item)) {
       result = [...result, ...flatten(item)];
@@ -341,7 +342,7 @@ function CumulativeQuantityDiscount(props: CumulativeQuantityDiscountProps) {
       .pipe(splitEvery(count))
       .pipe(filter((group) => group.length >= count))
       .pipe(flatten)
-      .unwrap() as Product[];
+      .unwrap();
 
     const matchCount = box(matched).pipe(length).unwrap();
 
